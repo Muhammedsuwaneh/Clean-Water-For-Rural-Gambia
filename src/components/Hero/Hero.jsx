@@ -1,65 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography, Grid } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import { NavLink } from 'react-router-dom';
-import image from "../../assets/rural-water-supply.png";
+import image1 from "../../assets/image1.jpg";
+import image2 from "../../assets/image2.png";
+import image3 from "../../assets/image3.webp";
+import image4 from "../../assets/image4.jpg";
+import image5 from "../../assets/image5.jpeg";
 
-const useStyles = styled((theme) => ({
-  heroContainer: {
-    background: "red",
-    backgroundSize: 'cover',
-    height: '1000vh',
-    with: '100%',
+const images = [image1, image2, image3, image4, image5];
+
+const HeroContainer = styled(Grid)(() => ({
+    height: '80vh',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    margin: "0",
     color: '#fff',
-  },
-  heading: {
+}));
+
+const Heading = styled(Typography)((theme) => ({
     fontWeight: 'bold',
     fontSize: '4rem',
-    marginBottom: theme.spacing(4),
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '3rem',
-    },
-  },
-  subheading: {
+}));
+
+const Subheading = styled(Typography)((theme) => ({
     fontSize: '1.5rem',
-    marginBottom: theme.spacing(4),
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '1.2rem',
-    },
-  },
-  button: {
-    padding: theme.spacing(2, 4),
-    fontSize: '1.2rem',
+}));
+
+const ButtonContainer = styled(Button)((theme) => ({
     borderRadius: '50px',
-    fontWeight: 'bold',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '1rem',
-      padding: theme.spacing(1.5, 3),
-    },
-  },
 }));
 
 function HeroSection() {
-  const classes = useStyles();
+  const [backgroundImage, setBackgroundImage] = useState(images[0]);
+  const [imageSelector, setImageSelector] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if(imageSelector === images.length-1 || imageSelector > images.length-1)
+        setImageSelector(0);
+      else
+        setImageSelector(prev => prev+1);
+
+      const image = images[imageSelector]
+      
+      setBackgroundImage(image);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [imageSelector]);
 
   return (
-    <Grid container className={classes.heroContainer} padding="1rem">
+    <HeroContainer container sx={{ background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage})
+    no-repeat center center/cover`, padding: { lg: "5rem", sm: "1rem", md: "1rem", xs: "1rem"}, textAlign: { sm: "center", md: "center", xs: "center", lg: "left"},
+    justifyContent: { lg: "left", sm: "center", md: "center", xs: "center"}, alignItems: { lg: "left", sm: "center", md: "center", xs: "center"}}}>
       <Grid item xs={12} sm={10} md={8} lg={6}>
-        <Typography variant="h1" sx={{ fontSize: { lg: "4rem", sm: "1.2rem", md: "1.2rem", xs: "1.2rem"}, margin: "1rem 0"}} className={classes.heading}>
-          <span color="#1976D2">Help us</span> bring clean water to the citizens of <br />
-          rural Gambia
-        </Typography>
-        <Typography variant="subtitle1" className={classes.subheading} margin="1rem 0">
-            Every cent matters
-        </Typography>
-        <Button variant="contained" color="primary" className={classes.button} component={NavLink} to="/">
-           Donate now
-        </Button>
+        <Heading variant="h1" sx={{ fontSize: { lg: "4rem", sm: "1.2rem", md: "1.2rem", xs: "1.2rem"}, margin: "1rem 0"}}>
+            <span color="#1976D2">Help us</span> bring clean water to the citizens of rural Gambia
+          </Heading>
+          <Typography margin="1rem .4rem" fontSize="1.3rem">
+              Every cent matters
+          </Typography>
+          <ButtonContainer variant="contained" color="primary" component={NavLink} to="/donate">
+            Donate now
+          </ButtonContainer>
       </Grid>
-    </Grid>
+    </HeroContainer>
   );
 }
 
